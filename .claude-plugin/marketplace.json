@@ -1,0 +1,19 @@
+{
+  "name": "engineering-playbook",
+  "owner": {
+    "name": "Engineering Platform"
+  },
+  "metadata": {
+    "description": "Private shared engineering agents and skills",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "engineering-playbook",
+      "source": "./plugins/engineering-playbook",
+      "description": "Reusable Python, DDD, testing, security and OpenSpec workflows",
+      "version": "1.0.0",
+      "strict": true
+    }
+  ]
+}

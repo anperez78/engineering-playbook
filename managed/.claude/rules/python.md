@@ -1,0 +1,12 @@
+---
+description: Python implementation standards
+---
+- Target the Python version in `pyproject.toml`; type public functions and meaningful internal boundaries.
+- Follow PEP 8 and configured formatter/linter; use explicit, domain-relevant names.
+- Use `Decimal` for money, never binary floating-point.
+- Validate untrusted input at boundaries; keep domain invariants in domain types/services.
+- Avoid hidden global state, service locators and unnecessary inheritance.
+- Use constructor/function injection; avoid framework imports in domain code.
+- Raise specific exceptions; translate them at application/API boundaries; do not swallow errors.
+- Use structured logging; never log secrets or unnecessary personal data.
+- Add dependencies only with a clear need and audit them under repository policy.

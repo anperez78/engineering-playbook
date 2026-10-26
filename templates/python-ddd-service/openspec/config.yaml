@@ -1,0 +1,28 @@
+schema: spec-driven
+context: |
+  Tech stack: Python 3.12+, FastAPI, pytest, Ruff and mypy.
+  Architecture: modular monolith by default; use DDD where domain complexity warrants it.
+  Domain code must not depend on web frameworks, persistence adapters or external SDKs.
+  Testing: unit tests for domain behavior, integration tests for adapters, E2E tests for critical journeys.
+  Requirements describe observable behavior. Designs cover failure modes, security, observability,
+  migrations, compatibility and rollback where relevant.
+rules:
+  proposal:
+    - State the problem, desired outcome, scope and non-goals.
+    - Identify affected bounded contexts and external contracts.
+  specs:
+    - Use observable requirements and concrete scenarios.
+    - Cover failure, validation, authorization and boundary behavior where relevant.
+  design:
+    - Explain alternatives, trade-offs, data ownership, consistency and operations.
+  tasks:
+    - Include tests at the appropriate unit, integration, contract or E2E layer.
+    - Include migration, rollout and rollback tasks when needed.
+operations:
+  apply:
+    guidance:
+      - Run focused tests before the full suite.
+      - Do not mark a task complete unless verification ran.
+  archive:
+    guidance:
+      - Summarize shipped behavior, tests and operational follow-up.

@@ -1,0 +1,75 @@
+# Copy to each consuming project as .github/workflows/playbook-update.yml.
+# Requires PLAYBOOK_READ_TOKEN (read access to private playbook repo) and
+# PROJECT_AUTOMATION_TOKEN (contents:write + pull_requests:write in this project).
+name: Engineering playbook update
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 8 * * 1"
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PROJECT_AUTOMATION_TOKEN }}
+      - name: Read current pin
+        id: current
+        run: |
+          python - <<'PY'
+          import json, os
+          version = json.load(open(".engineering-playbook/manifest.json"))["playbook_version"]
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f: f.write(f"version={version}\n")
+          PY
+      - name: Get latest release
+        id: latest
+        env:
+          GH_TOKEN: ${{ secrets.PLAYBOOK_READ_TOKEN }}
+          REPO: YOUR_ORG/engineering-playbook
+        run: |
+          set -euo pipefail
+          tag="$(gh api "repos/${REPO}/releases/latest" --jq .tag_name)"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+      - name: Compare versions
+        id: compare
+        run: |
+          if [ "${{ steps.current.outputs.version }}" = "${{ steps.latest.outputs.version }}" ]; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Download trusted release asset
+        if: steps.compare.outputs.needed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PLAYBOOK_READ_TOKEN }}
+          REPO: YOUR_ORG/engineering-playbook
+          TAG: ${{ steps.latest.outputs.tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/playbook
+          gh release download "$TAG" --repo "$REPO" --pattern "engineering-playbook-*.tar.gz" --dir /tmp/playbook
+          tar -xzf /tmp/playbook/engineering-playbook-*.tar.gz -C /tmp/playbook
+          # Archive must contain managed/ and scripts/ at the extraction root.
+      - name: Sync managed files
+        if: steps.compare.outputs.needed == 'true'
+        run: |
+          python /tmp/playbook/scripts/sync_playbook.py \
+            --source /tmp/playbook/managed --target . \
+            --version "${{ steps.latest.outputs.version }}"
+      - name: Open update PR
+        if: steps.compare.outputs.needed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PROJECT_AUTOMATION_TOKEN }}
+          branch: automation/engineering-playbook-update
+          delete-branch: true
+          title: "chore: update engineering playbook to ${{ steps.latest.outputs.tag }}"
+          commit-message: "chore: update engineering playbook to ${{ steps.latest.outputs.tag }}"
+          body: |
+            Automated update of centrally managed engineering standards.
+            Review policy changes and local overrides; CI must pass before merging.
+          labels: dependencies,engineering-playbook

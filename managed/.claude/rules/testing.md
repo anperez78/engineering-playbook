@@ -1,0 +1,12 @@
+---
+description: Testing strategy and quality gates
+---
+- Unit tests: fast, deterministic, isolate domain behavior; no network or real database.
+- Integration tests: verify adapters and persistence against disposable real infrastructure where practical.
+- Contract tests: verify API/event schemas and compatibility.
+- E2E tests: cover a small number of critical user journeys through public interfaces.
+- Test behavior and invariants, not private implementation details.
+- Cover success, invalid input, boundaries, failure/retry/idempotency and authorization where relevant.
+- Use descriptive names such as `test_<behavior>_when_<condition>`.
+- Never weaken/delete tests merely to make a change pass; explain changed expectations.
+- CI runs formatting, lint, typing, unit tests and applicable integration tests.

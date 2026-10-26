@@ -1,0 +1,9 @@
+{
+  "name": "engineering-playbook",
+  "version": "1.0.0",
+  "description": "Reusable agents and workflows for Python, DDD, testing, security and OpenSpec.",
+  "author": {
+    "name": "Engineering Platform"
+  },
+  "license": "UNLICENSED"
+}

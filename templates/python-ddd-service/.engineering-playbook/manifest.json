@@ -1,0 +1,13 @@
+{
+  "playbook_version": "1.0.0",
+  "managed_paths": [
+    "CLAUDE.md",
+    ".claude/rules/architecture.md",
+    ".claude/rules/python.md",
+    ".claude/rules/testing.md",
+    ".claude/rules/security.md",
+    "docs/engineering/architecture-principles.md",
+    "docs/engineering/testing-strategy.md",
+    ".github/workflows/quality.yml"
+  ]
+}

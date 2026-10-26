@@ -1,0 +1,11 @@
+---
+description: Architecture and DDD constraints for code changes
+---
+- Keep domain logic independent of frameworks, databases, HTTP and cloud SDKs.
+- Model business invariants explicitly in entities, value objects and domain services.
+- Use aggregates as consistency boundaries; avoid oversized aggregates.
+- Application services orchestrate use cases; do not duplicate domain invariants.
+- Infrastructure implements ports defined inward; domain code must not depend on infrastructure.
+- Prefer a modular monolith and explicit bounded contexts unless requirements justify another topology.
+- Record material architecture decisions as ADRs in `docs/architecture/decisions/`.
+- Avoid generic abstractions without a clear domain reason or multiple real use cases.
