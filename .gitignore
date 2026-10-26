@@ -1,2 +1,7 @@
 .idea/engineering-playbook.iml
 .idea/vcs.xml
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+dist/
